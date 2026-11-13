@@ -2,7 +2,7 @@
     position: fixed;
     width: 440px;
     max-width: calc(100vw - 32px);
-    background: rgba(11, 18, 29, 0.94);
+    background: rgba(11, 18, 29, 0.96);
     border: 1px solid rgba(0, 255, 204, 0.45);
     border-radius: 16px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 255, 204, 0.14);
@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    background: rgba(18, 29, 46, 0.95);
+    background: rgba(18, 29, 46, 0.98);
     border-bottom: 1px solid rgba(148, 163, 184, 0.16);
     cursor: move;
     user-select: none;
@@ -48,14 +48,27 @@
 }
 
 #lang-select {
-    background: rgba(10, 16, 26, 0.9);
-    color: #e2e8f0;
-    border: 1px solid rgba(148, 163, 184, 0.28);
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #0f172a;
+    color: #00ffcc;
+    font-weight: 600;
+    border: 1px solid rgba(0, 255, 204, 0.35);
     border-radius: 8px;
-    padding: 4px 8px;
+    padding: 5px 10px;
     font-size: 12px;
     outline: none;
     cursor: pointer;
+}
+
+#lang-select:hover {
+    border-color: #00ffcc;
+    background-color: #1e293b;
+}
+
+#lang-select option {
+    background-color: #0f172a;
+    color: #f8fafc;
 }
 
 .icon-btn {

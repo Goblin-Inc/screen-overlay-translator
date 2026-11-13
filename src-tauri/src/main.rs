@@ -33,7 +33,10 @@ async fn capture_and_translate(
                 translated: "Текст в выбранной области не распознан. Попробуйте выделить крупнее.".to_string(),
             });
         }
-        let translated = ai_client::translate_text(&text, &target_lang)?;
+        let translated = match ai_client::translate_text(&text, &target_lang) {
+            Ok(t) => t,
+            Err(e) => format!("⚠ {}", e),
+        };
         Ok::<TranslationResult, String>(TranslationResult {
             original: text,
             translated,
