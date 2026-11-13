@@ -78,12 +78,14 @@ sudo apt-get install -f
 ```
 Пакет автоматически подтянет `tesseract-ocr`, `tesseract-ocr-eng`, `tesseract-ocr-rus` и `maim`, добавит иконку в меню приложений и команду `screen-overlay-translator`.
 
-### Вариант 2: Запуск готового бинарника
-В разделе [**Releases**](https://github.com/Goblin-Inc/screen-overlay-translator/releases) также доступен одиночный бинарный файл `screen-overlay-translator-linux-x86_64`:
-
+### Вариант 2: Arch Linux (`pacman`) + готовый бинарник
 ```bash
-chmod +x screen-overlay-translator-linux-x86_64
-./screen-overlay-translator-linux-x86_64
+# Установите системные зависимости OCR и захвата экрана на Arch Linux:
+sudo pacman -S tesseract tesseract-data-eng tesseract-data-rus maim webkit2gtk-4.1
+
+# Запустите готовый бинарник из папки bin/ или из Releases:
+chmod +x ./bin/screen-overlay-translator
+./bin/screen-overlay-translator
 ```
 
 ### Вариант 3: Сборка из исходников
