@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Overlay Translator</title>
+    <link rel="stylesheet" href="/styles/global.css">
+    <link rel="stylesheet" href="/styles/overlay.css">
+</head>
+<body>
+    <div id="overlay-mask">
+        <div id="hud-hint">
+            <span class="badge">OCR + AI</span>
+            Выделите область экрана с текстом мышью • <b>Esc</b> — закрыть
+        </div>
+    </div>
+
+    <div id="selection-box" class="hidden">
+        <div id="selection-size">0 × 0</div>
+    </div>
+
+    <div id="translation-card" class="hidden">
+        <div class="card-header" id="card-drag-handle">
+            <div class="card-title">
+                <span class="dot"></span>
+                <span>Screen Translator</span>
+            </div>
+            <div class="card-controls">
+                <select id="lang-select" title="Язык перевода">
+                    <option value="auto">Авто (RU ⇄ EN)</option>
+                    <option value="ru">На Русский</option>
+                    <option value="en">На Английский</option>
+                    <option value="de">На Немецкий</option>
+                    <option value="ja">На Японский</option>
+                </select>
+                <button id="reselect-btn" class="icon-btn" title="Выделить другую область">🔍 Ещё</button>
+                <button id="copy-btn" class="icon-btn primary" title="Скопировать перевод">📋 В буфер</button>
+                <button id="close-btn" class="icon-btn danger" title="Закрыть (Esc)">✕</button>
+            </div>
+        </div>
+
+        <div id="loading-state" class="hidden">
+            <div class="spinner"></div>
+            <span>Распознавание (OCR) и перевод...</span>
+        </div>
+
+        <div id="result-state">
+            <div id="translated-output" class="translated-text"></div>
+            <details id="original-details">
+                <summary>Распознанный оригинал (OCR)</summary>
+                <div id="original-output" class="original-text"></div>
+            </details>
+        </div>
+    </div>
+
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>

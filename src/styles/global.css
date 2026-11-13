@@ -1,0 +1,87 @@
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: transparent !important;
+    user-select: none;
+    cursor: crosshair;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+#overlay-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(6, 11, 20, 0.36);
+    z-index: 1;
+    transition: background-color 0.15s ease;
+}
+
+#overlay-mask.transparent-mode {
+    background-color: rgba(0, 0, 0, 0.01);
+    cursor: default;
+}
+
+#hud-hint {
+    position: fixed;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 18, 30, 0.88);
+    border: 1px solid rgba(0, 255, 204, 0.4);
+    color: #e2e8f0;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    z-index: 3;
+}
+
+#hud-hint .badge {
+    background: linear-gradient(135deg, #00ffcc, #0ea5e9);
+    color: #041016;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+}
+
+#selection-box {
+    position: absolute;
+    border: 2px dashed #00ffcc;
+    background-color: rgba(0, 255, 204, 0.06);
+    box-shadow: 0 0 0 9999px rgba(4, 9, 16, 0.48);
+    border-radius: 6px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#selection-size {
+    position: absolute;
+    top: -26px;
+    left: 0;
+    background: rgba(11, 18, 30, 0.92);
+    color: #00ffcc;
+    border: 1px solid rgba(0, 255, 204, 0.4);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.hidden {
+    display: none !important;
+}
