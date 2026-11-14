@@ -80,14 +80,16 @@ sudo apt-get install -f
 ```
 The package automatically pulls in `tesseract-ocr`, `tesseract-ocr-eng`, `tesseract-ocr-rus`, and `maim`, adds a desktop entry, and installs the `screen-overlay-translator` command.
 
-### Option 2: Arch Linux (`pacman`) + Precompiled Binary
+### Option 2: Arch Linux / Hyprland / Wayland (`install.sh` & `run.sh`)
 ```bash
-# Install OCR and screen capture dependencies on Arch Linux:
-sudo pacman -S tesseract tesseract-data-eng tesseract-data-rus maim webkit2gtk-4.1
+git clone https://github.com/Goblin-Inc/screen-overlay-translator.git
+cd screen-overlay-translator
 
-# Run the precompiled binary from bin/ or Releases:
-chmod +x ./bin/screen-overlay-translator
-./bin/screen-overlay-translator
+# Automatically installs pacman dependencies (tesseract, grim, maim, webkit2gtk-4.1) and builds the release binary:
+./install.sh
+
+# Launch the overlay (automatically sets Wayland/Hyprland WebKitGTK environment variables):
+./run.sh
 ```
 
 ### Option 3: Build from Source

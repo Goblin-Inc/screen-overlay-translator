@@ -69,6 +69,20 @@ fn exit_app(app: AppHandle) {
 }
 
 fn main() {
+    #[cfg(target_os = "linux")]
+    {
+        // Fix WebKitGTK Error 71 (Protocol error dispatching to Wayland display) on Hyprland / Wayland
+        if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() {
+            std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+        }
+        if std::env::var_os("WEBKIT_DISABLE_COMPOSITING_MODE").is_none() {
+            std::env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "1");
+        }
+        if std::env::var_os("GDK_BACKEND").is_none() {
+            std::env::set_var("GDK_BACKEND", "x11");
+        }
+    }
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             capture_and_translate,
