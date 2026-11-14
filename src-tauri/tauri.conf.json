@@ -24,7 +24,7 @@
       {
         "label": "main",
         "title": "Screen Overlay Translator",
-        "fullscreen": true,
+        "fullscreen": false,
         "maximized": false,
         "visible": true,
         "decorations": false,
