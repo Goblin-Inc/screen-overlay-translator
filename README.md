@@ -115,3 +115,6 @@ cargo build --release
 <div align="center">
 Developed by <a href="https://github.com/Goblin-Inc">@Goblin-Inc</a> • <a href="README_Ru.md">Русская версия</a>
 </div>
+
+## 📄 License
+MIT © [Goblin-Inc](https://github.com/Goblin-Inc)
