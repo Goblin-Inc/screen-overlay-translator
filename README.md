@@ -104,7 +104,12 @@ cargo build --release
 
 ## 📋 Changelog
 
-### `v1.0.0` — Stable Release with 4-Stage Translator Cascade & Compact HUD *(Current)*
+### `v2.0.0` — Cross-Platform Windows 10/11 & Linux Release *(Current)*
+- **Added**: Full native **Windows 10/11** support — DPI-aware GDI+ screen capture with 2x upscaling, zero-install **Windows Built-in OCR** (plus automatic Tesseract detection), UTF-8 clipboard support, and silent process execution (no flashing console windows).
+- **Fixed**: HiDPI coordinate scaling (`devicePixelRatio`) and maximized full-screen selection overlay on Windows.
+- **Added**: Automated GitHub Actions cross-platform CI/CD building Windows (`.msi`, NSIS `-setup.exe`, portable `.exe`) and Linux (`.deb` + binary) releases.
+
+### `v1.0.0` — Stable Release with 4-Stage Translator Cascade & Compact HUD
 - **Added**: 4-tier fault-tolerant translation cascade in `ai_client.rs` (`clients5` -> `GTX` -> `MyMemory` -> `Pollinations AI`).
 - **Added**: 200% Lanczos3 upscaling and contrast enhancement prior to OCR in `capture.rs`.
 - **Improved**: Compact draggable overlay UI with dark language dropdown and collapsible original OCR text spoiler.

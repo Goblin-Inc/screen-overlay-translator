@@ -99,8 +99,8 @@ window.addEventListener('mouseup', async (e) => {
     overlayMask.classList.add('transparent-mode');
 
     const dpr = window.devicePixelRatio || 1;
-    const captureX = Math.round((window.screenX || 0) + rect.left * dpr);
-    const captureY = Math.round((window.screenY || 0) + rect.top * dpr);
+    const captureX = Math.round(((window.screenX || 0) + rect.left) * dpr);
+    const captureY = Math.round(((window.screenY || 0) + rect.top) * dpr);
     const captureW = Math.round(rect.width * dpr);
     const captureH = Math.round(rect.height * dpr);
 

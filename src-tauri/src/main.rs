@@ -94,6 +94,7 @@ fn main() {
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_decorations(false);
                 let _ = window.set_always_on_top(true);
+                let _ = window.maximize();
                 let _ = window.show();
                 let _ = window.set_focus();
             }

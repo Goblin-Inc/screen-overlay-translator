@@ -1,6 +1,6 @@
 {
   "productName": "screen-overlay-translator",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "identifier": "com.overlay.translator",
   "bundle": {
     "active": true,
@@ -25,7 +25,7 @@
         "label": "main",
         "title": "Screen Overlay Translator",
         "fullscreen": false,
-        "maximized": false,
+        "maximized": true,
         "visible": true,
         "decorations": false,
         "transparent": true,

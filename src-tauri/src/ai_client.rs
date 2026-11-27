@@ -1,7 +1,25 @@
 use serde_json::Value;
-use std::process::Command;
+use std::io::Write;
+use std::process::Stdio;
 
+use crate::os_strategy::hidden_cmd;
+
+#[cfg(target_os = "windows")]
+const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+
+#[cfg(not(target_os = "windows"))]
 const USER_AGENT: &str = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+
+#[allow(unused_mut)]
+fn curl_cmd() -> std::process::Command {
+    let mut cmd = hidden_cmd("curl");
+    #[cfg(target_os = "windows")]
+    {
+        // Avoid Windows Schannel CRL revocation failures on school / corporate networks
+        cmd.arg("--ssl-no-revoke");
+    }
+    cmd
+}
 
 /// Автоматически определяет направление перевода (EN -> RU или RU -> EN) и переводит текст
 /// через каскад из 4 резервных провайдеров.
@@ -13,39 +31,35 @@ pub fn translate_text(text: &str, target_lang: &str) -> Result<String, String> {
 
     let is_cyr = has_mostly_cyrillic(cleaned);
     let resolved_target = if target_lang.is_empty() || target_lang == "auto" {
-        if is_cyr {
-            "en"
-        } else {
-            "ru"
-        }
+        if is_cyr { "en" } else { "ru" }
     } else {
         target_lang
     };
 
     let source_lang = if is_cyr { "ru" } else { "en" };
 
-    // 1. Самый быстрый и стабильный канал: Google Chrome Dictionary / Translate API (clients5)
+    // 1. Google Chrome Dictionary / Translate API (clients5)
     if let Ok(translated) = call_clients5_google(cleaned, resolved_target) {
         if !translated.trim().is_empty() {
             return Ok(translated);
         }
     }
 
-    // 2. Второй канал: Google Translate GTX API с полноценным браузерным User-Agent
+    // 2. Google Translate GTX API
     if let Ok(translated) = call_google_gtx(cleaned, resolved_target) {
         if !translated.trim().is_empty() {
             return Ok(translated);
         }
     }
 
-    // 3. Третий канал: MyMemory Translation API
+    // 3. MyMemory Translation API
     if let Ok(translated) = call_mymemory(cleaned, source_lang, resolved_target) {
         if !translated.trim().is_empty() {
             return Ok(translated);
         }
     }
 
-    // 4. Четвёртый канал: Контекстный AI-переводчик (Pollinations OpenAI endpoint)
+    // 4. Context-aware AI translator fallback (Pollinations OpenAI endpoint)
     if let Ok(ai_translated) = call_ai_translator(cleaned, resolved_target) {
         if !ai_translated.trim().is_empty() {
             return Ok(ai_translated);
@@ -69,7 +83,7 @@ fn has_mostly_cyrillic(text: &str) -> bool {
 }
 
 fn call_clients5_google(text: &str, target_lang: &str) -> Result<String, String> {
-    let output = Command::new("curl")
+    let output = curl_cmd()
         .args([
             "-sS",
             "--max-time",
@@ -97,7 +111,6 @@ fn call_clients5_google(text: &str, target_lang: &str) -> Result<String, String>
     let body = String::from_utf8_lossy(&output.stdout);
     let parsed: Value = serde_json::from_str(&body).map_err(|e| e.to_string())?;
 
-    // Формат может быть [["перевод", "en"]] или ["перевод"]
     if let Some(arr) = parsed.as_array() {
         let mut result = String::new();
         for item in arr {
@@ -118,7 +131,7 @@ fn call_clients5_google(text: &str, target_lang: &str) -> Result<String, String>
 }
 
 fn call_google_gtx(text: &str, target_lang: &str) -> Result<String, String> {
-    let output = Command::new("curl")
+    let output = curl_cmd()
         .args([
             "-sS",
             "--max-time",
@@ -173,7 +186,7 @@ fn call_mymemory(text: &str, source_lang: &str, target_lang: &str) -> Result<Str
     let langpair = format!("{}|{}", src, target_lang);
     let clipped: String = text.chars().take(480).collect();
 
-    let output = Command::new("curl")
+    let output = curl_cmd()
         .args([
             "-sS",
             "--max-time",
@@ -235,7 +248,8 @@ fn call_ai_translator(text: &str, target_lang: &str) -> Result<String, String> {
         "temperature": 0.2
     });
 
-    let output = Command::new("curl")
+    // Pass UTF-8 JSON body via stdin (--data-binary @-) so Windows cmd-line escaping never mangles Cyrillic
+    let mut child = curl_cmd()
         .args([
             "-sS",
             "--max-time",
@@ -246,13 +260,21 @@ fn call_ai_translator(text: &str, target_lang: &str) -> Result<String, String> {
             "POST",
             "https://text.pollinations.ai/openai",
             "-H",
-            "Content-Type: application/json",
-            "-d",
-            &payload.to_string(),
+            "Content-Type: application/json; charset=utf-8",
+            "--data-binary",
+            "@-",
         ])
-        .output()
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
         .map_err(|e| e.to_string())?;
 
+    if let Some(mut stdin) = child.stdin.take() {
+        let _ = stdin.write_all(payload.to_string().as_bytes());
+    }
+
+    let output = child.wait_with_output().map_err(|e| e.to_string())?;
     let body = String::from_utf8_lossy(&output.stdout);
     let parsed: Value = serde_json::from_str(&body).map_err(|e| e.to_string())?;
     let content = parsed["choices"][0]["message"]["content"]
